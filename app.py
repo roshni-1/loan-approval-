@@ -14,35 +14,28 @@ def index():
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
-        # Extract input values from the JSON request
+        # Extract input values from the request
         data = request.get_json()
 
-        # Validate input fields
-        required_fields = ['credit_score', 'relationship_duration', 'repayment_tenure', 'income',
-                            'investments', 'savings_account_balance', 'outstanding_loan']
+        # Validate if all required fields are present
+        if all(key in data for key in ['credit_score', 'relationship_duration', 'repayment_tenure',
+                                       'income', 'investments', 'savings_account_balance', 'outstanding_loan']):
+            # Make a prediction using the loaded model
+            input_data = np.array([[float(data['credit_score']), float(data['relationship_duration']),
+                                    float(data['repayment_tenure']), float(data['income']),
+                                    float(data['investments']), float(data['savings_account_balance']),
+                                    float(data['outstanding_loan'])]])
 
-        for field in required_fields:
-            if field not in data:
-                return jsonify({'error': f'Missing required field: {field}'}), 400
+            prediction = model.predict(input_data)
 
-        # Convert input values to float
-        credit_score = float(data['credit_score'])
-        relationship_duration = float(data['relationship_duration'])
-        repayment_tenure = float(data['repayment_tenure'])
-        income = float(data['income'])
-        investments = float(data['investments'])
-        savings_account_balance = float(data['savings_account_balance'])
-        outstanding_loan = float(data['outstanding_loan'])
-
-        # Make a prediction using the loaded model
-        input_data = np.array([[credit_score, relationship_duration, repayment_tenure, income, investments,
-                                savings_account_balance, outstanding_loan]])
-        prediction = int(model.predict(input_data)[0])
-
-        # Return the prediction as JSON
-        return jsonify({'prediction': prediction})
+            # Return the prediction as JSON
+            return jsonify({'prediction': int(prediction[0])})
+        else:
+            # If any required field is missing, return an error
+            return jsonify({'error': 'Missing required fields'}), 400
 
     except Exception as e:
+        # Handle exceptions and return an error response
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
