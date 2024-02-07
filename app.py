@@ -14,7 +14,7 @@ def index():
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
-        # Extract input values from the form data
+        # Extract input values from the request
         credit_score = float(request.form['credit_score'])
         relationship_duration = float(request.form['relationship_duration'])
         repayment_tenure = float(request.form['repayment_tenure'])
@@ -31,6 +31,7 @@ def predict():
         # Return the prediction as JSON
         return jsonify({'prediction': int(prediction[0])})
     except Exception as e:
+        # Return an error message as JSON
         return jsonify({'error': str(e)})
 
 if __name__ == '__main__':
