@@ -38,7 +38,6 @@
     <p class="error-message" id="error-message"></p>
 
     <script>
-        // JavaScript for handling predictions
         function predict() {
             // Extract input values
             var creditScore = document.getElementById('credit_score').value;
@@ -49,7 +48,6 @@
             var savingsAccountBalance = document.getElementById('savings_account_balance').value;
             var outstandingLoan = document.getElementById('outstanding_loan').value;
 
-            // Make a POST request to predict endpoint (simplified)
             fetch('https://bejewelled-dragon-2d1763.netlify.app/.netlify/functions/predict', {
                 method: 'POST',
                 headers: {
