@@ -60,9 +60,12 @@
 
         // Make a POST request to the Flask endpoint for prediction
         fetch('/predict', {
-            method: 'POST',
-            body: formData
-        })
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: `credit_score=${creditScore}&relationship_duration=${relationshipDuration}&repayment_tenure=${repaymentTenure}&income=${income}&investments=${investments}&savings_account_balance=${savingsAccountBalance}&outstanding_loan=${outstandingLoan}`,
+})
         .then(response => response.json())
         .then(data => {
             document.getElementById('prediction-result').innerText = 'Prediction: ' + data.prediction;
