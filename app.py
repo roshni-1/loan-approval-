@@ -30,6 +30,7 @@ def predict():
 
         # Return the prediction as JSON
         return jsonify({'prediction': int(prediction[0])})
+
     except Exception as e:
         return jsonify({'error': str(e)})
 
