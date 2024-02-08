@@ -4,62 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Loan Approval Predictor</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 20px;
-            background-color: #f4f4f4;
-        }
-
-        h1 {
-            color: #333;
-        }
-
-        form {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-        }
-
-        input {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 16px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-
-        button {
-            background-color: #007bff;
-            color: #fff;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
-        p {
-            color: green;
-            margin-top: 20px;
-        }
-
-        .error-message {
-            color: red;
-            margin-top: 20px;
-        }
-    </style>
 </head>
 <body>
     <h1>Loan Approval Predictor</h1>
@@ -90,10 +34,13 @@
     </form>
 
     <p id="prediction-result"></p>
+
     <p class="error-message" id="error-message"></p>
 
     <script>
+        // JavaScript for handling predictions
         function predict() {
+            // Extract input values
             var creditScore = document.getElementById('credit_score').value;
             var relationshipDuration = document.getElementById('relationship_duration').value;
             var repaymentTenure = document.getElementById('repayment_tenure').value;
@@ -102,20 +49,35 @@
             var savingsAccountBalance = document.getElementById('savings_account_balance').value;
             var outstandingLoan = document.getElementById('outstanding_loan').value;
 
-            fetch('/predict', {
+            // Make a POST request to predict endpoint (simplified)
+            fetch('https://bejewelled-dragon-2d1763.netlify.app/.netlify/functions/predict', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Content-Type': 'application/json',
                 },
-                body: `credit_score=${creditScore}&relationship_duration=${relationshipDuration}&repayment_tenure=${repaymentTenure}&income=${income}&investments=${investments}&savings_account_balance=${savingsAccountBalance}&outstanding_loan=${outstandingLoan}`,
+                body: JSON.stringify({
+                    credit_score: creditScore,
+                    relationship_duration: relationshipDuration,
+                    repayment_tenure: repaymentTenure,
+                    income: income,
+                    investments: investments,
+                    savings_account_balance: savingsAccountBalance,
+                    outstanding_loan: outstandingLoan,
+                }),
             })
             .then(response => response.json())
             .then(data => {
+                // Update the prediction result on the page
                 document.getElementById('prediction-result').innerText = 'Prediction: ' + data.prediction;
+
+                // Clear any previous error message
                 document.getElementById('error-message').innerText = '';
             })
             .catch(error => {
+                // Display an error message
                 document.getElementById('error-message').innerText = 'Error: ' + error.message;
+
+                // Clear the prediction result
                 document.getElementById('prediction-result').innerText = '';
             });
         }
