@@ -64,32 +64,61 @@
 <body>
     <h1>Loan Approval Predictor</h1>
 
-    <form id="prediction-form" action="/predict" method="post">
+    <form id="prediction-form">
         <label for="credit_score">Credit Score:</label>
-        <input type="text" name="credit_score" required><br>
+        <input type="text" id="credit_score" required><br>
 
         <label for="relationship_duration">Relationship Duration (years):</label>
-        <input type="text" name="relationship_duration" required><br>
+        <input type="text" id="relationship_duration" required><br>
 
         <label for="repayment_tenure">Repayment Tenure (years):</label>
-        <input type="text" name="repayment_tenure" required><br>
+        <input type="text" id="repayment_tenure" required><br>
 
         <label for="income">Income:</label>
-        <input type="text" name="income" required><br>
+        <input type="text" id="income" required><br>
 
         <label for="investments">Investments:</label>
-        <input type="text" name="investments" required><br>
+        <input type="text" id="investments" required><br>
 
         <label for="savings_account_balance">Savings Account Balance:</label>
-        <input type="text" name="savings_account_balance" required><br>
+        <input type="text" id="savings_account_balance" required><br>
 
         <label for="outstanding_loan">Outstanding Loan:</label>
-        <input type="text" name="outstanding_loan" required><br>
+        <input type="text" id="outstanding_loan" required><br>
 
-        <button type="submit">Predict</button>
+        <button type="button" onclick="predict()">Predict</button>
     </form>
 
     <p id="prediction-result"></p>
     <p class="error-message" id="error-message"></p>
+
+    <script>
+        function predict() {
+            var creditScore = document.getElementById('credit_score').value;
+            var relationshipDuration = document.getElementById('relationship_duration').value;
+            var repaymentTenure = document.getElementById('repayment_tenure').value;
+            var income = document.getElementById('income').value;
+            var investments = document.getElementById('investments').value;
+            var savingsAccountBalance = document.getElementById('savings_account_balance').value;
+            var outstandingLoan = document.getElementById('outstanding_loan').value;
+
+            fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `credit_score=${creditScore}&relationship_duration=${relationshipDuration}&repayment_tenure=${repaymentTenure}&income=${income}&investments=${investments}&savings_account_balance=${savingsAccountBalance}&outstanding_loan=${outstandingLoan}`,
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('prediction-result').innerText = 'Prediction: ' + data.prediction;
+                document.getElementById('error-message').innerText = '';
+            })
+            .catch(error => {
+                document.getElementById('error-message').innerText = 'Error: ' + error.message;
+                document.getElementById('prediction-result').innerText = '';
+            });
+        }
+    </script>
 </body>
 </html>
